@@ -1,13 +1,13 @@
 
 import streamlit as st
-from typing import List
+from difflib import get_close_matches
 
 st.set_page_config(page_title="Gazebo Energy Coach", page_icon="⚡")
 
 st.title("Gazebo SEM Energy Coach Bot ⚡")
 st.write("Hi! I'm your SEM Energy Coach. Ask me anything about energy performance, carbon goals, or your energy model.")
 
-# Sample Q&A based on 5 use cases
+# FAQ dictionary
 faq = {
     "What is SEM?": "Strategic Energy Management (SEM) is a system of organizational practices, policies, and processes that embed energy management into everyday operations. It follows the Plan-Do-Check-Act cycle and helps drive continuous improvement in energy performance.",
     "How is SEM different from energy projects?": "While energy projects are one-time efforts, SEM is a long-term, continuous improvement strategy. It focuses on integrating energy management into your culture and operations rather than doing isolated upgrades.",
@@ -17,9 +17,10 @@ faq = {
 }
 
 def get_response(query: str) -> str:
-    for question, answer in faq.items():
-        if query.lower() in question.lower() or question.lower() in query.lower():
-            return answer
+    questions = list(faq.keys())
+    match = get_close_matches(query, questions, n=1, cutoff=0.3)
+    if match:
+        return faq[match[0]]
     return "I'm still learning! Try asking about SEM, energy models, carbon goals, or performance issues."
 
 # Chat UI
